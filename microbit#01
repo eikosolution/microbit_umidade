@@ -1,0 +1,38 @@
+# Variável global para armazenar a leitura do sensor
+reading = 0
+
+# Define o brilho dos LEDs do micro:bit para um nível médio (64)
+led.set_brightness(64)
+
+# Função que será executada continuamente
+def on_forever():
+    global reading
+    
+    # Ativa o sensor escrevendo um valor alto (1023) no pino analógico P1
+    pins.analog_write_pin(AnalogPin.P1, 1023)
+    
+    # Pausa por 10 milissegundos para garantir que o sensor estabilize
+    basic.pause(10)
+    
+    # Lê o valor do sensor do pino analógico P0
+    reading = pins.analog_read_pin(AnalogPin.P0)
+    
+    # Desativa o sensor escrevendo um valor baixo (0) no pino analógico P1
+    pins.analog_write_pin(AnalogPin.P1, 0)
+    
+    # Exibe a leitura do sensor como um gráfico de barras no display LED do micro:bit
+    led.plot_bar_graph(reading, 1023)
+    
+    # Pausa por 5000 milissegundos (5 segundos) antes de repetir a leitura
+    basic.pause(5000)
+
+# Função que será executada quando o botão A for pressionado
+def on_button_pressed_a():
+    # Exibe a leitura do sensor no display LED do micro:bit
+    basic.show_number(reading)
+
+# Configura o micro:bit para chamar a função on_button_pressed_a quando o botão A for pressionado
+input.on_button_pressed(Button.A, on_button_pressed_a)
+
+# Inicia a execução contínua da função on_forever
+basic.forever(on_forever)
